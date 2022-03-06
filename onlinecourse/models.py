@@ -117,9 +117,11 @@ class Question(models.Model):
         all_answers = self.choice_set.filter(correct=True).count()
         selected_correct = self.choice_set.filter(correct=True, id__in=selected_ids).count()
         if all_answers == selected_correct:
-            return True
+            self.grade = 1
+            return 1
         else:
-            return False
+            self.grade = 1
+            return 0
 
 
 #  <HINT> Create a Choice Model with:

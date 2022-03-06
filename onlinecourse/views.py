@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 # <HINT> Import any new Models here, Question, Choice, Submission
-from .models import Course, Enrollment, Question, Choice, Submission
+from .models import Course, Enrollment, Question, Choice, Submission, Lesson
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -112,10 +112,23 @@ def enroll(request, course_id):
 #def show_exam_result(request, course_id, submission_id):
 
 def show_exam_result(request, course_id, submission_id):
+    context = {}
     course = get_object_or_404(Course, pk=course_id)
     submission = Submission.objects.get(pk = submission_id)
-    choices = submission.choices.all()
-    choice_ids =  [choice.id for choice in choices]
+    no_questions = 0
+    total_score = 0
+    for lesson in Lesson.objects.filter(course_id =course_id ): #course.lessons.all()
+        for question in Question.objects.filter(lesson =lesson ):#lesson.question_set.all
+            choices = submission.choices.filter(question=question)
+            selected_choice_ids = []
+            question_score = question.is_get_score(choices)
+            no_questions += 1
+            total_score += question_score
+            
+    final_score = int(total_score*100/(no_questions))
+    context['grade'] = final_score
+    
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 # <HINT> Create a submit view to create an exam submission record for a course enrollment,
 # you may implement it based on following logic:
@@ -124,23 +137,18 @@ def show_exam_result(request, course_id, submission_id):
          # Collect the selected choices from exam form
          # Add each selected choice object to the submission object
          # Redirect to show_exam_result with the submission id
+         
 def submit(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
     enrollment = Enrollment.objects.get(user=user, course=course)
     submission = Submission.objects.create(enrollment = enrollment)
     
-    def extract_answers(request):
-        submitted_anwsers = []
-        for key in request.POST:
-            if key.startswith('choice'):
-                value = request.POST[key]
-                choice_id = int(value)
-                submitted_anwsers.append(choice_id)
-        return submitted_anwsers
-    
-    for choice_id in self.extract_answers(request):
-        submission.choices.add(choice_id)
+    for key in request.POST:
+        if key.startswith('choice'):
+            value = request.POST[key]
+            choice_id = int(value)
+            submission.choices.add(choice_id)
         
     return show_exam_result(request, course_id, submission.id)
         

@@ -53,7 +53,7 @@
             <!-- Task: show questions and choices -->
             <!-- <HINT> Use Bootstrap Collapse to hide exam first, more details could be found here-->
             
-              <button type="button" class="btn btn-info btn-block"" data-toggle="collapse" data-target="#exam">Start Exam</button>
+              <button type="button" class="btn btn-info btn-block" data-toggle="collapse" data-target="#exam">Start Exam</button>
             <div id="exam" class="collapse">
             
             {% if user.is_authenticated %}
@@ -67,7 +67,7 @@
             <!-- <HINT> For each question choice, you may create a checkbox input like -->
         
                     <!-- A choice submission form example-->
-                    <form id="questionform" action="point to a submit view" method="post">
+                    <form id="questionform" action="{% url 'onlinecourse:submit' course.id %}" method="post">
                     {% for lesson in course.lesson_set.all %}
                                {% for question in lesson.question_set.all %}
                                 <div class="card mt-1">

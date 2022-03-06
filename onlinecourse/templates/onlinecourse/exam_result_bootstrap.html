@@ -51,6 +51,19 @@
         <div class="card-columns-vertical mt-1">
         <h5 class="">Exam results</h5>
             <!--HINT Display exam results-->
+            {% for lesson in course.lesson_set.all %}
+                       {% for question in lesson.question_set.all %}
+                        <div class="card mt-1">
+                            <div class="card-header"><h5>{{ question.question}}</h5></div>
+                            {% for choice in question.choice_set.all %}
+                            <div class="card-body">
+                                  {{ choice.content }}
+                                </div>
+                             {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
             {{ grade }}/100.
         </div>
     </div>
