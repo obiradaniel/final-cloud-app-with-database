@@ -1,11 +1,11 @@
   applications:
-  - name: onlinecourse
+  - name: onlinecourse_graded
     routes:
-      - route: host.domain
+      - route: obiradanielonline.us-south.cf.appdomain.cloud
     memory: 128M
     buildpack: python_buildpack
-  - name: onlinecourse-nginx
+  - name: onlinecourse_graded-nginx
     routes:
-      - route: host.domain/static
+      - route: obiradanielonline.us-south.cf.appdomain.cloud/static
     memory: 128M
     buildpack: staticfile_buildpack
