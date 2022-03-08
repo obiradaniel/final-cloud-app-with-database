@@ -34,7 +34,6 @@
         </ul>
     </div>
 </nav>
-
 <div class="container-fluid">
     {% if grade > 80 %}
     <div class="alert alert-success">
@@ -56,15 +55,39 @@
                         <div class="card mt-1">
                             <div class="card-header"><h5>{{ question.question}}</h5></div>
                             {% for choice in question.choice_set.all %}
-                            <div class="card-body">
-                                  {{ choice.content }}
+                            <div class="card-body"
+                            {% if choice.correct%}
+                                {% if choice.id not in submission_ids%}
+                                    style="color:orange;padding: 1%"
+                                {% else %}
+                                    style="color:rgb(0, 153, 51);padding: 1%"
+                                {% endif %}
+                            {% else %}
+                                {% if choice.id in submission_ids%}
+                                    style="color:red;padding: 1%"
+                                {% else %}
+                                    style="padding: 1%"
+                                {% endif %}
+                            {% endif %}
+                            >         {% if choice.correct%}
+                                          {% if choice.id not in submission_ids%}
+                                              Not selected: {{ choice.content }}
+                                          {% else %}
+                                              Correct answer: {{ choice.content }}
+                                          {% endif %}
+                                      {% else %}
+                                          {% if choice.id in submission_ids%}
+                                              Wrong Answer: {{ choice.content }}
+                                          {% else %}
+                                              {{ choice.content }}
+                                          {% endif %}
+                                      {% endif %}
                                 </div>
                              {% endfor %}
                             </div>
                         </div>
                     {% endfor %}
                 {% endfor %}
-            {{ grade }}/100.
         </div>
     </div>
 </body>
