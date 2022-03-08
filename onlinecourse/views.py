@@ -114,9 +114,14 @@ def enroll(request, course_id):
 def show_exam_result(request, course_id, submission_id):
     context = {}
     course = get_object_or_404(Course, pk=course_id)
+    user = request.user
+    context['course'] = course
     submission = Submission.objects.get(pk = submission_id)
+    submission_ids = {choice.id:choice.id for choice in submission.choices.all()}
+    context['submission_ids'] = submission_ids
     no_questions = 0
     total_score = 0
+    print(submission_ids)
     for lesson in Lesson.objects.filter(course_id =course_id ): #course.lessons.all()
         for question in Question.objects.filter(lesson =lesson ):#lesson.question_set.all
             choices = submission.choices.filter(question=question)
@@ -161,6 +166,10 @@ def submit(request, course_id):
 #            choice_id = int(value)
 #            submitted_anwsers.append(choice_id)
 #    return submitted_anwsers
+
+
+
+
 
 
 
